@@ -19,12 +19,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - configuration: Debug
-            build_param: --debug
-            artifact_name: app-win-x86_64-debug
-            arch: x86_64
           - configuration: Release
-            build_param:
+            build_param: --release
             artifact_name: app-win-x86_64-release
             arch: x86_64
     steps:
