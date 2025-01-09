@@ -421,8 +421,10 @@ GLSL_DEFINE(materialEmissionColor, GLSL_LTCTXA(NV_IGRAPH_XF_LTCTXA_CM_COL) ".xyz
     }
 
     mstring_append(body,
-    "   oPos = invViewport * (tPosition * compositeMat);\n"
-    );
+    "   oPos = tPosition * compositeMat;\n"
+    "   oPos.xy = adjust_pixel_center(oPos.xy, oPos.w);\n"
+    "   oPos = invViewport * oPos;\n"
+        );
 
     if (state->vulkan) {
         mstring_append(body, "   oPos.y *= -1;\n");

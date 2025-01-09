@@ -122,7 +122,26 @@ MString *pgraph_gen_vsh_glsl(const ShaderState *state, bool prefix_outputs)
         }
     }
     mstring_append(header, "\n");
+    unsigned int scale = state->surface_scale_factor;
+    mstring_append_fmt(header, "\n"
+            "vec2 adjust_pixel_center(vec2 screen_pos, float w) {\n"
+            "  if (w == 0.0 || isinf(w)) {\n"
+            "    w = 1.0;\n"
+            "  }\n"
 
+            "  screen_pos /= w;\n"
+            "  vec2 pixel = floor(screen_pos);\n"
+            "  vec2 subpixel = screen_pos - pixel;\n"
+            "  vec2 round_down = vec2(lessThan(subpixel, vec2(0.5625)));\n"
+
+            "  subpixel -= vec2(0.0625);\n"
+
+            "  vec2 bias = vec2(0.002);\n"
+            "  subpixel += mix(bias, -bias, round_down);\n"
+
+            "  return w * (pixel + subpixel / %d);\n"
+            "}\n",
+            scale);
     MString *body = mstring_from_str("void main() {\n");
 
     for (i = 0; i < NV2A_VERTEXSHADER_ATTRIBUTES; i++) {
