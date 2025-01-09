@@ -20,7 +20,6 @@ jobs:
       matrix:
         include:
           - configuration: Release
-            build_param: --release
             artifact_name: app-win-x86_64-release
             arch: x86_64
     steps:
